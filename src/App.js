@@ -37,6 +37,17 @@ const DismissAllButton = styled.button`
   border-radius: 10px;
 `
 
+const LoadMoreButton = styled.button`
+  background: #e8dea9;
+  border: 0px;
+  color: black;
+  font-size: 14px;
+  font-weight: bold;
+  width: 50%;
+  height: 30px;
+  border-radius: 30px;
+  margin: 20px 25% 20px 25%;
+`
 
 const App = ({entries, fetchEntries, dismissPost, dismissAll, after}) => {
   const [selectedPost, setSelectedPost] = useState(null)
@@ -56,6 +67,9 @@ const App = ({entries, fetchEntries, dismissPost, dismissAll, after}) => {
     setSelectedPost(null)
     dismissAll()
   }
+  const handleLoadMorePosts = ()=>{
+    fetchEntries(after)
+  }
 
  return (
   <PageContainer>
@@ -67,6 +81,7 @@ const App = ({entries, fetchEntries, dismissPost, dismissAll, after}) => {
           onClick={()=>handleSelectPost(item.data)}
           onClose={()=>handleDismissPost(item.data.id)}
       />)}
+      {after && <LoadMoreButton onClick={handleLoadMorePosts}>Load more..</LoadMoreButton>}
       {entries.length >0 && <DismissAllButton onClick={handleDismissAll}>Dismiss All</DismissAllButton>}
     </ListContainer>
     <DetailViewContainer>

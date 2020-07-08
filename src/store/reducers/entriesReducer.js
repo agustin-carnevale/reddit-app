@@ -12,7 +12,10 @@ const initialState = {
 export default (state = initialState, {type, payload})=>{
     switch(type){
         case FETCH_ENTRIES:
-            return payload
+            return {
+                after: payload.after,
+                list: state.list.concat(payload.list)
+            }
         case DISMISS_POST:
             return {
                 after: state.after,
