@@ -28,6 +28,7 @@ const Close = styled.div`
     position: absolute;
     top:10px;
     right:10px;
+    cursor: pointer;
 `
 
 const Top = styled.div`
@@ -45,6 +46,7 @@ const Bottom = styled.div`
 const Image = styled.img`
     width: 50%;
     max-width: 150px;
+    cursor: pointer;
 `
 
 const isImg = (thumbnailUrl)=>{
@@ -70,11 +72,11 @@ const EntryView = ({data, onClick, onClose}) => {
 
         <p>{data.title}</p>
 
-        {isImg(data.thumbnail) && <Image src={data.thumbnail}/>}
+        {isImg(data.thumbnail) && <Image src={data.thumbnail} onClick={handleRead}/>}
 
         <Bottom>
             <p>{data.num_comments} comments</p>
-            <FontAwesomeIcon icon={faExternalLinkSquareAlt} size='2x' onClick={handleRead}/>
+            <FontAwesomeIcon icon={faExternalLinkSquareAlt} size='2x' onClick={handleRead} style={{cursor:'pointer'}}/>
         </Bottom> 
     </Container>
  )
