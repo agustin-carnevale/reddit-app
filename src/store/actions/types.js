@@ -1,1 +1,2 @@
 export const FETCH_ENTRIES =  'FETCH_ENTRIES'
+export const DISMISS_POST =  'DISMISS_POST'

@@ -1,11 +1,17 @@
-import redditAPI from '../../api/redditAPI'
-
 import {
-    FETCH_ENTRIES
+    FETCH_ENTRIES,
+    DISMISS_POST
 } from './types'
 
+const postsPerRequest = 10
 
-export const fetchEntries =  () =>  async dispatch =>{
-    const {data} = await redditAPI.get('/best.json?limit=10')
-    dispatch({type: FETCH_ENTRIES, payload: data?.data?.children || [] })
+
+export const fetchEntries =  (after) =>  async dispatch =>{
+   const res = await fetch(`https://www.reddit.com/best.json?limit=${postsPerRequest}${after? `&after=${after}`:''}`)
+   const data = await res.json()
+   dispatch({type: FETCH_ENTRIES, payload: {list: data?.data?.children || [], after: data?.data?.after } })
+}
+
+export const dismissPost =  (id) =>  async dispatch =>{
+    dispatch({type: DISMISS_POST, payload: id })
 }

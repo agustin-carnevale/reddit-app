@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimes, faExternalLinkSquareAlt, faBell } from '@fortawesome/free-solid-svg-icons'
+
 TimeAgo.addLocale(en)
 const timeAgo = new TimeAgo('en-US')
 
@@ -13,9 +16,27 @@ const Container = styled.div`
     border:1px solid grey;
     background: #283178;
     color: white;
+    position: relative;
+`
+const Bell = styled.div`
+    position: absolute;
+    top:10px;
+    left:10px;
+`
+
+const Close = styled.div`
+    position: absolute;
+    top:10px;
+    right:10px;
 `
 
 const Top = styled.div`
+    margin-top: 5px;
+    display:flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+`
+const Bottom = styled.div`
     display:flex;
     justify-content: space-between;
     flex-wrap: wrap;
@@ -30,17 +51,31 @@ const isImg = (thumbnailUrl)=>{
     return thumbnailUrl && (thumbnailUrl.includes('.jpg') || thumbnailUrl.includes('.jpeg') || thumbnailUrl.includes('.png'))
 }
 
-const EntryView = ({data, onClick}) => {
- const date = new Date(data.created_utc*1000) // The 0 there is the key, which sets the date to the epoch
+const EntryView = ({data, onClick, onClose}) => {
+ const [read,setRead]= useState(false)
+
+ const handleRead = ()=>{
+    setRead(true)
+    onClick()
+ }
+
  return (
-    <Container onClick={onClick}>
+    <Container>
+        <Bell>{!read && <FontAwesomeIcon icon={faBell} color='red'/>}</Bell>
+        <Close><FontAwesomeIcon icon={faTimes} onClick={onClose}/></Close>
         <Top>
             <h4>{data.author}</h4>
-            <p>{timeAgo.format(date)}</p>
+            <p>{timeAgo.format(new Date(data.created_utc*1000))}</p>
         </Top>
+
         <p>{data.title}</p>
+
         {isImg(data.thumbnail) && <Image src={data.thumbnail}/>}
-        <p>Number of comments: {data.num_comments}</p>
+
+        <Bottom>
+            <p>Number of comments: {data.num_comments}</p>
+            <FontAwesomeIcon icon={faExternalLinkSquareAlt} size='2x' onClick={handleRead}/>
+        </Bottom> 
     </Container>
  )
 }

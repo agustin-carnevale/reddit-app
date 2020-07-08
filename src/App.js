@@ -11,19 +11,21 @@ const PageContainer = styled.div`
   width: 100%;
 `
 const ListContainer = styled.div`
-  display:flex;
-  flex-direction:column;
-  width: 35%;
-  overflow-y:scroll;
+  overflow:auto;
+  flex-basis: 35%;
+  height: 100vh; 
+  overflow: auto;
 `
 
 const DetailViewContainer = styled.div`
   display:flex;
   flex-direction:column;
   width: 65%;
+  flex-basis: 65%;
+ 
 `
 
-const App = ({entries, fetchEntries}) => {
+const App = ({entries, fetchEntries, dismissPost}) => {
   const [selectedPost, setSelectedPost] = useState(null)
 
   useEffect(()=>{
@@ -34,10 +36,20 @@ const App = ({entries, fetchEntries}) => {
     setSelectedPost(data)
   }
 
+  const handleDismissPost = (id)=>{
+    dismissPost(id)
+  }
+
  return (
   <PageContainer>
     <ListContainer>
-        {entries && entries.map(item => <EntryView key={item.data.id} data={item.data} onClick={()=>handleSelectPost(item.data)}/>)}
+      {entries && entries.map(item => 
+        <EntryView 
+          key={item.data.id} 
+          data={item.data} 
+          onClick={()=>handleSelectPost(item.data)}
+          onClose={()=>handleDismissPost(item.data.id)}
+      />)}
     </ListContainer>
     <DetailViewContainer>
       {selectedPost && <PostDetailView data={selectedPost} />}
@@ -46,7 +58,8 @@ const App = ({entries, fetchEntries}) => {
 }
 
 const mapState = ({entries})=>({
- entries
+ entries: entries.list,
+ after: entries.after,
 })
 
 export default connect(mapState, actions)(App)
