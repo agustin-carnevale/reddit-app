@@ -9,12 +9,14 @@ const PageContainer = styled.div`
   display:flex;
   flex-direction:row;
   width: 100%;
+  height: 100vh; 
 `
 const ListContainer = styled.div`
   overflow:auto;
   flex-basis: 35%;
   height: 100vh; 
   overflow: auto;
+  position:relative;
 `
 
 const DetailViewContainer = styled.div`
@@ -22,11 +24,23 @@ const DetailViewContainer = styled.div`
   flex-direction:column;
   width: 65%;
   flex-basis: 65%;
- 
+  height: 100vh; 
+`
+const DismissAllButton = styled.button`
+  background: #131630;
+  color: white;
+  font-size: 20px;
+  position: sticky;
+  bottom:0;
+  width: 100%;
+  height: 35px;
+  border-radius: 10px;
 `
 
-const App = ({entries, fetchEntries, dismissPost}) => {
+
+const App = ({entries, fetchEntries, dismissPost, dismissAll, after}) => {
   const [selectedPost, setSelectedPost] = useState(null)
+  // const [detailView, setDetailView] = useState(false)
 
   useEffect(()=>{
     fetchEntries()
@@ -35,9 +49,12 @@ const App = ({entries, fetchEntries, dismissPost}) => {
   const handleSelectPost = (data)=>{
     setSelectedPost(data)
   }
-
   const handleDismissPost = (id)=>{
     dismissPost(id)
+  }
+  const handleDismissAll = (id)=>{
+    setSelectedPost(null)
+    dismissAll()
   }
 
  return (
@@ -50,6 +67,7 @@ const App = ({entries, fetchEntries, dismissPost}) => {
           onClick={()=>handleSelectPost(item.data)}
           onClose={()=>handleDismissPost(item.data.id)}
       />)}
+      {entries.length >0 && <DismissAllButton onClick={handleDismissAll}>Dismiss All</DismissAllButton>}
     </ListContainer>
     <DetailViewContainer>
       {selectedPost && <PostDetailView data={selectedPost} />}

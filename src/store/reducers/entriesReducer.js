@@ -1,6 +1,7 @@
 import {
     FETCH_ENTRIES,
-    DISMISS_POST
+    DISMISS_POST,
+    DISMISS_ALL_POSTS
 } from '../actions/types'
 
 const initialState = {
@@ -16,6 +17,11 @@ export default (state = initialState, {type, payload})=>{
             return {
                 after: state.after,
                 list: state.list.filter(post=>post.data.id !== payload)
+            }
+        case DISMISS_ALL_POSTS:
+            return {
+                after: null,
+                list: []
             }
         default:
             return state

@@ -1,6 +1,7 @@
 import {
     FETCH_ENTRIES,
-    DISMISS_POST
+    DISMISS_POST,
+    DISMISS_ALL_POSTS
 } from './types'
 
 const postsPerRequest = 10
@@ -15,3 +16,8 @@ export const fetchEntries =  (after) =>  async dispatch =>{
 export const dismissPost =  (id) =>  async dispatch =>{
     dispatch({type: DISMISS_POST, payload: id })
 }
+
+export const dismissAll =  () =>  async dispatch =>{
+    dispatch({type: DISMISS_ALL_POSTS, payload: {} })
+}
+

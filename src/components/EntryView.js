@@ -73,7 +73,7 @@ const EntryView = ({data, onClick, onClose}) => {
         {isImg(data.thumbnail) && <Image src={data.thumbnail}/>}
 
         <Bottom>
-            <p>Number of comments: {data.num_comments}</p>
+            <p>{data.num_comments} comments</p>
             <FontAwesomeIcon icon={faExternalLinkSquareAlt} size='2x' onClick={handleRead}/>
         </Bottom> 
     </Container>
