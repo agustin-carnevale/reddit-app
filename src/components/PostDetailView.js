@@ -8,8 +8,7 @@ const Container = styled.div`
     width: 100%;
 `
 
-//just some arbitrary values here, can be 
-//done better depending on design needed
+//just some arbitrary values here, can be done better depending on design needed
 const ImgContainer = styled.div`
     width: 400px;
     height: 400px;
@@ -20,9 +19,9 @@ const Image = styled.img`
     max-width: 100%;
 `
 
-const isImg = (thumbnailUrl)=>{
+const isImg = (imageUrl)=>{
     //simple check here
-    return thumbnailUrl && (thumbnailUrl.includes('.jpg') || thumbnailUrl.includes('.jpeg') || thumbnailUrl.includes('.png'))
+    return imageUrl && (imageUrl.includes('.jpg') || imageUrl.includes('.jpeg') || imageUrl.includes('.png'))
 }
 
 const renderImage = (data)=>{
@@ -34,8 +33,8 @@ const renderImage = (data)=>{
 
 const PostDetailView = ({data}) => {
  return <Container>
-    <h2>{data.author}</h2>
-    <h4>{data.title}</h4>
+    <h4>{data.author}</h4>
+    <p>{data.title}</p>
     {renderImage(data)}
  </Container> 
 }

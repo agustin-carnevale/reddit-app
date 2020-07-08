@@ -53,20 +53,19 @@ const isImg = (thumbnailUrl)=>{
     return thumbnailUrl && (thumbnailUrl.includes('.jpg') || thumbnailUrl.includes('.jpeg') || thumbnailUrl.includes('.png'))
 }
 
-const EntryView = ({data, onClick, onClose}) => {
- const [read,setRead]= useState(false)
+const EntryView = ({data, onClick, onClose, onRead}) => {
 
  const handleRead = ()=>{
-    setRead(true)
+    onRead(data.id)
     onClick()
  }
 
  return (
     <Container>
-        <Bell>{!read && <FontAwesomeIcon icon={faBell} color='red'/>}</Bell>
+        <Bell>{!data.read && <FontAwesomeIcon icon={faBell} color='red'/>}</Bell>
         <Close><FontAwesomeIcon icon={faTimes} onClick={onClose}/></Close>
         <Top>
-            <h4>{data.author}</h4>
+            <h5>{data.author}</h5>
             <p>{timeAgo.format(new Date(data.created_utc*1000))}</p>
         </Top>
 

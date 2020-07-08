@@ -4,6 +4,8 @@ import * as actions from './store/actions'
 import EntryView from './components/EntryView'
 import styled from 'styled-components'
 import PostDetailView from './components/PostDetailView'
+import Fab from '@material-ui/core/Fab';
+import RestoreIcon from '@material-ui/icons/Refresh'
 
 const PageContainer = styled.div`
   display:flex;
@@ -49,12 +51,14 @@ const LoadMoreButton = styled.button`
   margin: 20px 25% 20px 25%;
 `
 
-const App = ({entries, fetchEntries, dismissPost, dismissAll, after}) => {
+const App = ({entries, fetchEntries, dismissPost, dismissAll, after, restore, readPost}) => {
   const [selectedPost, setSelectedPost] = useState(null)
   // const [detailView, setDetailView] = useState(false)
 
   useEffect(()=>{
-    fetchEntries()
+    if (!entries || entries.length === 0){
+      fetchEntries()
+    }
   },[])
 
   const handleSelectPost = (data)=>{
@@ -70,16 +74,20 @@ const App = ({entries, fetchEntries, dismissPost, dismissAll, after}) => {
   const handleLoadMorePosts = ()=>{
     fetchEntries(after)
   }
+  const handleRestoreApp = ()=>{
+    restore()
+  }
 
  return (
   <PageContainer>
     <ListContainer>
-      {entries && entries.map(item => 
+      {entries && entries.map(post => 
         <EntryView 
-          key={item.data.id} 
-          data={item.data} 
-          onClick={()=>handleSelectPost(item.data)}
-          onClose={()=>handleDismissPost(item.data.id)}
+          key={post.id} 
+          data={post} 
+          onClick={()=>handleSelectPost(post)}
+          onClose={()=>handleDismissPost(post.id)}
+          onRead={readPost}
       />)}
       {after && <LoadMoreButton onClick={handleLoadMorePosts}>Load more..</LoadMoreButton>}
       {entries.length >0 && <DismissAllButton onClick={handleDismissAll}>Dismiss All</DismissAllButton>}
@@ -87,6 +95,10 @@ const App = ({entries, fetchEntries, dismissPost, dismissAll, after}) => {
     <DetailViewContainer>
       {selectedPost && <PostDetailView data={selectedPost} />}
     </DetailViewContainer>
+    <Fab color="primary" aria-label="add" style={{position:'fixed', bottom: '20px', right: '20px'}} onClick={handleRestoreApp}>
+        <RestoreIcon />
+    </Fab>
+    
   </PageContainer>)
 }
 

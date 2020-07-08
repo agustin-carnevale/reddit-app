@@ -1,3 +1,6 @@
-export const FETCH_ENTRIES =  'FETCH_ENTRIES'
-export const DISMISS_POST =  'DISMISS_POST'
-export const DISMISS_ALL_POSTS =  'DISMISS_ALL_POSTS'
+export const FETCH_ENTRIES = 'FETCH_ENTRIES'
+export const DISMISS_POST = 'DISMISS_POST'
+export const DISMISS_ALL_POSTS = 'DISMISS_ALL_POSTS'
+export const RESTORE_APP = 'RESTORE_APP'
+export const READ_POST = 'READ_POST'
+
