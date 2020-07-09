@@ -1,12 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux'
-import * as actions from './store/actions'
-import EntryView from './components/EntryView'
+import * as actions from '../store/actions'
+import EntryView from './EntryView'
 import styled from 'styled-components'
-import PostDetailView from './components/PostDetailView'
+import PostDetailView from './PostDetailView'
 import Fab from '@material-ui/core/Fab';
 import RestoreIcon from '@material-ui/icons/Refresh'
 import {useTransition, animated} from 'react-spring'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBackward} from '@fortawesome/free-solid-svg-icons'
+import {MOBILE_SCREEN_BREAKPOINT} from '../config'
 
 const PageContainer = styled.div`
   display:flex;
@@ -20,14 +23,25 @@ const ListContainer = styled.div`
   height: 100vh; 
   overflow: auto;
   position:relative;
+
+  @media (max-width: ${MOBILE_SCREEN_BREAKPOINT}px) {
+    flex-basis: 100%;
+    ${props => props.mobileView ? '': 'display:none;'}
+  }
 `
 
 const DetailViewContainer = styled.div`
   display:flex;
   flex-direction:column;
-  width: 65%;
   flex-basis: 65%;
-  height: 100vh; 
+  height: 100vh;
+  padding-top: 25px; 
+  position: relative;
+
+  @media (max-width: ${MOBILE_SCREEN_BREAKPOINT}px) {
+    flex-basis: 100%;
+    ${props => props.mobileView ? '': 'display:none;'}
+  }
 `
 const DismissAllButton = styled.button`
   background: #131630;
@@ -38,10 +52,10 @@ const DismissAllButton = styled.button`
   width: 100%;
   height: 35px;
   border-radius: 10px;
+  cursor: pointer;
 `
 
 const LoadMoreButton = styled.button`
-  background: #e8dea9;
   border: 0px;
   color: black;
   font-size: 14px;
@@ -50,7 +64,23 @@ const LoadMoreButton = styled.button`
   height: 30px;
   border-radius: 30px;
   margin: 20px 25% 20px 25%;
+  cursor: pointer;
 `
+const BackToPostListButton = styled.div`
+  position: absolute;
+  top: 20px;
+  right: 20px;
+
+  @media (min-width: ${MOBILE_SCREEN_BREAKPOINT+1}px) {
+    display: none;
+  }
+`
+
+const FabStyles = {
+  position:'fixed', 
+  bottom: '40px', 
+  right: '15px'
+}
 
 const App = ({
   entries, 
@@ -62,14 +92,14 @@ const App = ({
   readPost
 }) => {
   const [selectedPost, setSelectedPost] = useState(null)
-  // const [detailView, setDetailView] = useState(false)
+  const [mobileDetailView, setMobileDetailView] = useState(false)
 
   const transitions = useTransition(entries ? entries : [], post=>post.id, {
     from: { opacity:0,  marginTop: -100, marginBottom:100 },
     enter: { opacity:1, marginTop: 0, marginBottom:0 },
-    leave: { opacity:0, marginLeft: -400, marginRight: 400 },
-    config:{duration: 300},
-    delay:{duration: 400}
+    leave: { opacity:0, marginLeft: -200, marginRight: 200 },
+    config:{duration: 500},
+    delay:{duration: 200}
   })
 
   useEffect(()=>{
@@ -83,33 +113,37 @@ const App = ({
     dismissAll()
   }
 
+  const onRead = (id, item) =>{
+    setSelectedPost(item)
+    setMobileDetailView(true)
+    readPost(id)
+  }
+ 
  return (
   <PageContainer>
-
-    <ListContainer>
+    <ListContainer mobileView={!mobileDetailView}>
     {entries && transitions.map(({ item, props, key }) =>
       <animated.div key={key} style={props}> 
         <EntryView 
           data={item} 
-          onClick={()=>setSelectedPost(item)}
+          onRead={(id)=>onRead(id,item)}
           onClose={()=>dismissPost(item.id)}
-          onRead={readPost}
         />
       </animated.div>)}
       {after && <LoadMoreButton onClick={()=>fetchEntries(after)}>Load more..</LoadMoreButton>}
       {entries.length >0 && <DismissAllButton onClick={handleDismissAll}>Dismiss All</DismissAllButton>}
     </ListContainer>
 
-    <DetailViewContainer>
+    <DetailViewContainer mobileView={mobileDetailView}>
       {selectedPost && <PostDetailView data={selectedPost} />}
+      <BackToPostListButton>
+        <FontAwesomeIcon icon={faBackward} size='lg' onClick={()=>setMobileDetailView(false)}/>
+      </BackToPostListButton>
     </DetailViewContainer>
-    
-    <Fab color="primary" onClick={restore}
-      style={{position:'fixed', bottom: '20px', right: '20px'}} 
-    >
+
+    <Fab color="primary" onClick={restore} style={FabStyles}>
       <RestoreIcon />
     </Fab>
-
   </PageContainer>)
 }
 

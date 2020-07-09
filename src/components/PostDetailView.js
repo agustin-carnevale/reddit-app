@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components'
+import {MOBILE_SCREEN_BREAKPOINT} from '../config'
 
 const Container = styled.div`
     display: flex;
@@ -12,6 +13,9 @@ const Container = styled.div`
 const ImgContainer = styled.div`
     width: 400px;
     height: 400px;
+    @media (max-width: ${MOBILE_SCREEN_BREAKPOINT}px) {
+        width: 250px;
+    }
 `
 
 const Image = styled.img`

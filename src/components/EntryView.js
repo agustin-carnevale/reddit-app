@@ -52,12 +52,7 @@ const isImg = (thumbnailUrl)=>{
     return thumbnailUrl && (thumbnailUrl.includes('.jpg') || thumbnailUrl.includes('.jpeg') || thumbnailUrl.includes('.png'))
 }
 
-const EntryView = ({data, onClick, onClose, onRead}) => {
-    const handleRead = ()=>{
-        onRead(data.id)
-        onClick()
-    }
-
+const EntryView = ({data, onRead, onClose}) => {
  return (
     <Container>
         <Bell>{!data?.read && <FontAwesomeIcon icon={faBell} color='red'/>}</Bell>
@@ -67,10 +62,10 @@ const EntryView = ({data, onClick, onClose, onRead}) => {
             <p>{timeAgo.format(new Date(data.created_utc*1000))}</p>
         </Top>
         <p>{data.title}</p>
-        {isImg(data.thumbnail) && <Image src={data.thumbnail} onClick={handleRead}/>}
+        {isImg(data.thumbnail) && <Image src={data.thumbnail} onClick={()=>onRead(data.id)}/>}
         <Bottom>
             <p>{data.num_comments} comments</p>
-            <FontAwesomeIcon icon={faExternalLinkSquareAlt} size='2x' onClick={handleRead} style={{cursor:'pointer'}}/>
+            <FontAwesomeIcon icon={faExternalLinkSquareAlt} size='2x' onClick={()=>onRead(data.id)} style={{cursor:'pointer'}}/>
         </Bottom> 
     </Container>)
 }
