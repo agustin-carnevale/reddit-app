@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
@@ -23,7 +23,6 @@ const Bell = styled.div`
     top:10px;
     left:10px;
 `
-
 const Close = styled.div`
     position: absolute;
     top:10px;
@@ -54,31 +53,26 @@ const isImg = (thumbnailUrl)=>{
 }
 
 const EntryView = ({data, onClick, onClose, onRead}) => {
-
- const handleRead = ()=>{
-    onRead(data.id)
-    onClick()
- }
+    const handleRead = ()=>{
+        onRead(data.id)
+        onClick()
+    }
 
  return (
     <Container>
-        <Bell>{!data.read && <FontAwesomeIcon icon={faBell} color='red'/>}</Bell>
+        <Bell>{!data?.read && <FontAwesomeIcon icon={faBell} color='red'/>}</Bell>
         <Close><FontAwesomeIcon icon={faTimes} onClick={onClose}/></Close>
         <Top>
             <h5>{data.author}</h5>
             <p>{timeAgo.format(new Date(data.created_utc*1000))}</p>
         </Top>
-
         <p>{data.title}</p>
-
         {isImg(data.thumbnail) && <Image src={data.thumbnail} onClick={handleRead}/>}
-
         <Bottom>
             <p>{data.num_comments} comments</p>
             <FontAwesomeIcon icon={faExternalLinkSquareAlt} size='2x' onClick={handleRead} style={{cursor:'pointer'}}/>
         </Bottom> 
-    </Container>
- )
+    </Container>)
 }
 
 export default EntryView

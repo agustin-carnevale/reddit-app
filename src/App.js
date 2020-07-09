@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import PostDetailView from './components/PostDetailView'
 import Fab from '@material-ui/core/Fab';
 import RestoreIcon from '@material-ui/icons/Refresh'
+import {useTransition, animated} from 'react-spring'
 
 const PageContainer = styled.div`
   display:flex;
@@ -51,9 +52,25 @@ const LoadMoreButton = styled.button`
   margin: 20px 25% 20px 25%;
 `
 
-const App = ({entries, fetchEntries, dismissPost, dismissAll, after, restore, readPost}) => {
+const App = ({
+  entries, 
+  fetchEntries, 
+  dismissPost, 
+  dismissAll, 
+  after, 
+  restore, 
+  readPost
+}) => {
   const [selectedPost, setSelectedPost] = useState(null)
   // const [detailView, setDetailView] = useState(false)
+
+  const transitions = useTransition(entries ? entries : [], post=>post.id, {
+    from: { opacity:0,  marginTop: -100, marginBottom:100 },
+    enter: { opacity:1, marginTop: 0, marginBottom:0 },
+    leave: { opacity:0, marginLeft: -400, marginRight: 400 },
+    config:{duration: 300},
+    delay:{duration: 400}
+  })
 
   useEffect(()=>{
     if (!entries || entries.length === 0){
@@ -61,44 +78,38 @@ const App = ({entries, fetchEntries, dismissPost, dismissAll, after, restore, re
     }
   },[])
 
-  const handleSelectPost = (data)=>{
-    setSelectedPost(data)
-  }
-  const handleDismissPost = (id)=>{
-    dismissPost(id)
-  }
   const handleDismissAll = (id)=>{
     setSelectedPost(null)
     dismissAll()
   }
-  const handleLoadMorePosts = ()=>{
-    fetchEntries(after)
-  }
-  const handleRestoreApp = ()=>{
-    restore()
-  }
 
  return (
   <PageContainer>
+
     <ListContainer>
-      {entries && entries.map(post => 
+    {entries && transitions.map(({ item, props, key }) =>
+      <animated.div key={key} style={props}> 
         <EntryView 
-          key={post.id} 
-          data={post} 
-          onClick={()=>handleSelectPost(post)}
-          onClose={()=>handleDismissPost(post.id)}
+          data={item} 
+          onClick={()=>setSelectedPost(item)}
+          onClose={()=>dismissPost(item.id)}
           onRead={readPost}
-      />)}
-      {after && <LoadMoreButton onClick={handleLoadMorePosts}>Load more..</LoadMoreButton>}
+        />
+      </animated.div>)}
+      {after && <LoadMoreButton onClick={()=>fetchEntries(after)}>Load more..</LoadMoreButton>}
       {entries.length >0 && <DismissAllButton onClick={handleDismissAll}>Dismiss All</DismissAllButton>}
     </ListContainer>
+
     <DetailViewContainer>
       {selectedPost && <PostDetailView data={selectedPost} />}
     </DetailViewContainer>
-    <Fab color="primary" aria-label="add" style={{position:'fixed', bottom: '20px', right: '20px'}} onClick={handleRestoreApp}>
-        <RestoreIcon />
-    </Fab>
     
+    <Fab color="primary" onClick={restore}
+      style={{position:'fixed', bottom: '20px', right: '20px'}} 
+    >
+      <RestoreIcon />
+    </Fab>
+
   </PageContainer>)
 }
 

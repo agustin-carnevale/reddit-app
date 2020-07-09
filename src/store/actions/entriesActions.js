@@ -8,13 +8,10 @@ import {
 
 const postsPerRequest = 10
 
-
-export const fetchEntries =  (after) =>  async dispatch =>{
-   const res = await fetch(`https://www.reddit.com/best.json?limit=${postsPerRequest}${after? `&after=${after}`:''}`)
-   const data = await res.json()
-   const posts = data?.data?.children ?  data.data.children.map(post => ({
+const filterOnlyNeededFields = (data)=>{
+    const posts = data?.data?.children ?  data.data.children.map(post => ({
         id: post.data.id,
-        created: post.data.created_utc,
+        created_utc: post.data.created_utc,
         title: post.data.title,
         author: post.data.author,
         thumbnail: post.data.thumbnail,
@@ -22,6 +19,13 @@ export const fetchEntries =  (after) =>  async dispatch =>{
         preview: post.data.preview,
         read: false
     }))  : []
+    return posts
+}
+
+export const fetchEntries =  (after) =>  async dispatch =>{
+   const res = await fetch(`https://www.reddit.com/best.json?limit=${postsPerRequest}${after? `&after=${after}`:''}`)
+   const data = await res.json()
+   const posts = filterOnlyNeededFields(data)
    dispatch({type: FETCH_ENTRIES, payload: {list: posts, after: data?.data?.after} })
 }
 
@@ -36,16 +40,7 @@ export const dismissAll =  () =>  async dispatch =>{
 export const restore =  () =>  async dispatch =>{
     const res = await fetch(`https://www.reddit.com/best.json?limit=${postsPerRequest}`)
     const data = await res.json()
-    const posts = data?.data?.children ?  data.data.children.map(post => ({
-        id: post.data.id,
-        created_utc: post.data.created_utc,
-        title: post.data.title,
-        author: post.data.author,
-        thumbnail: post.data.thumbnail,
-        num_comments: post.data.num_comments,
-        preview: post.data.preview,
-        read: false
-    }))  : []
+    const posts = filterOnlyNeededFields(data)
     dispatch({type: RESTORE_APP, payload: {list: posts, after: data?.data?.after }})
 }
 
